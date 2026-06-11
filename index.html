@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#DC4C3E" />
+  <title>PFA Jobs</title>
+  <!-- DEV ONLY: fetch mock activated when sessionStorage.__pfa_fetch_mock is set -->
+  <script>
+  (function(){
+    var raw = sessionStorage.getItem('__pfa_fetch_mock');
+    if (!raw) return;
+    var mocks; try { mocks = JSON.parse(raw); } catch { return; }
+    var origFetch = window.fetch;
+    window.fetch = function(input, init) {
+      var url = typeof input === 'string' ? input : (input && input.url);
+      if (url && url.includes('script.google.com')) {
+        var body; try { body = JSON.parse(init && init.body); } catch {}
+        var action = body && body.action;
+        var resp = mocks[action] || {ok:true, data:{}};
+        return Promise.resolve(new Response(JSON.stringify(resp), {status:200, headers:{'Content-Type':'application/json'}}));
+      }
+      return origFetch.apply(this, arguments);
+    };
+    console.log('[pfa-mock] fetch interceptor active for actions:', Object.keys(mocks));
+  })();
+  </script>
+  <script type="module" crossorigin src="./assets/index-3U_H771F.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Mk3Jqn_m.css">
+<link rel="manifest" href="./manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="./registerSW.js"></script></head>
+<body>
+  <div id="app"></div>
+</body>
+</html>
